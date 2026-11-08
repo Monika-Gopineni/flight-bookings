@@ -1,4 +1,8 @@
 
+/* ==============================
+   FLIGHT DATA
+================================ */
+
 const flights = [
     {
         airline: "IndiGo",
@@ -26,45 +30,108 @@ const flights = [
     }
 ];
 
+/* ==============================
+   HTML ELEMENTS
+================================ */
+
 const flightList = document.getElementById("flightList");
+const flightForm = document.getElementById("flightForm");
+
 const dateInput = document.getElementById("date");
 const returnInput = document.getElementById("returnDate");
 
-const today = new Date().toISOString().split("T")[0];
+const bookingModal = document.getElementById("bookingModal");
+
+/* ==============================
+   DATE SETUP
+================================ */
+
+// Use local date instead of UTC date.
+
+function getToday() {
+    const date = new Date();
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+}
+
+const today = getToday();
 
 dateInput.min = today;
 dateInput.value = today;
+
 returnInput.min = today;
 
+/* ==============================
+   TRIP TYPE
+================================ */
+
 document.querySelectorAll('input[name="trip"]').forEach(radio => {
+
     radio.addEventListener("change", function () {
+
         const roundTrip = this.value === "Round Trip";
+
         returnInput.disabled = !roundTrip;
         returnInput.required = roundTrip;
+
+        if (!roundTrip) {
+            returnInput.value = "";
+        }
     });
+
 });
+
+/* ==============================
+   DEPARTURE DATE
+================================ */
 
 dateInput.addEventListener("change", function () {
+
     returnInput.min = this.value;
+
+    if (returnInput.value && returnInput.value < this.value) {
+        returnInput.value = "";
+    }
+
 });
 
+/* ==============================
+   DISPLAY FLIGHTS
+================================ */
+
 function displayFlights() {
+
     const sort = document.getElementById("sort").value;
+
     const sortedFlights = [...flights];
 
     if (sort === "price") {
+
         sortedFlights.sort((a, b) => a.price - b.price);
+
     } else {
+
         sortedFlights.sort((a, b) => a.duration - b.duration);
+
     }
+
+    // Clear previous flight cards.
 
     flightList.innerHTML = "";
 
     sortedFlights.forEach(flight => {
+
         const card = document.createElement("div");
         card.className = "flight-card";
 
+        // Airline information.
+
         const airline = document.createElement("div");
+
         const name = document.createElement("h3");
         name.className = "airline-name";
         name.textContent = flight.airline;
@@ -74,6 +141,8 @@ function displayFlights() {
         code.textContent = flight.code;
 
         airline.append(name, code);
+
+        // Departure information.
 
         const departure = document.createElement("div");
         departure.className = "flight-time";
@@ -86,6 +155,8 @@ function displayFlights() {
 
         departure.append(departureTime, departureLabel);
 
+        // Arrival information.
+
         const arrival = document.createElement("div");
         arrival.className = "flight-time";
 
@@ -97,59 +168,122 @@ function displayFlights() {
 
         arrival.append(arrivalTime, arrivalLabel);
 
+        // Price information.
+
         const priceSection = document.createElement("div");
         priceSection.className = "price-section";
 
         const price = document.createElement("div");
         price.className = "price";
-        price.textContent = "₹" + flight.price.toLocaleString("en-IN");
+
+        price.textContent =
+            "₹" + flight.price.toLocaleString("en-IN");
 
         const perPerson = document.createElement("small");
         perPerson.textContent = "Per passenger";
+
+        // Booking button.
 
         const bookButton = document.createElement("button");
         bookButton.className = "book-btn";
         bookButton.textContent = "Book Now";
 
-        bookButton.addEventListener("click", () => bookFlight(flight));
+        bookButton.addEventListener("click", function () {
+            bookFlight(flight);
+        });
 
         priceSection.append(price, perPerson, bookButton);
 
-        card.append(airline, departure, arrival, priceSection);
+        // Add all sections to card.
+
+        card.append(
+            airline,
+            departure,
+            arrival,
+            priceSection
+        );
+
         flightList.appendChild(card);
+
     });
+
 }
 
-document.getElementById("sort").addEventListener("change", displayFlights);
+/* ==============================
+   SORT FLIGHTS
+================================ */
 
-document.getElementById("flightForm").addEventListener("submit", function(event) {
+document.getElementById("sort").addEventListener("change", function () {
+
+    displayFlights();
+
+});
+
+/* ==============================
+   SEARCH FLIGHTS
+================================ */
+
+flightForm.addEventListener("submit", function (event) {
+
     event.preventDefault();
 
     const from = document.getElementById("from").value.trim();
     const to = document.getElementById("to").value.trim();
 
+    const tripType = document.querySelector(
+        'input[name="trip"]:checked'
+    ).value;
+
     if (from.toLowerCase() === to.toLowerCase()) {
+
         alert("Departure and destination cannot be the same.");
+
+        return;
+    }
+
+    if (tripType === "Round Trip" && !returnInput.value) {
+
+        alert("Please select your return date.");
+
         return;
     }
 
     if (returnInput.value && returnInput.value < dateInput.value) {
+
         alert("Return date must be after departure date.");
+
         return;
     }
 
-    document.getElementById("route").textContent = from + " → " + to;
+    // Update route.
+
+    document.getElementById("route").textContent =
+        from + " → " + to;
+
+    // Display available flights.
 
     displayFlights();
+
+    // Scroll to results.
 
     document.getElementById("flights").scrollIntoView({
         behavior: "smooth"
     });
+
 });
 
+/* ==============================
+   BOOK FLIGHT
+================================ */
+
 function bookFlight(flight) {
-    const passengers = Number(document.getElementById("passengers").value);
+
+    const passengers = Number(
+        document.getElementById("passengers").value
+    );
+
     const from = document.getElementById("from").value.trim();
+
     const to = document.getElementById("to").value.trim();
 
     const total = flight.price * passengers;
@@ -158,11 +292,46 @@ function bookFlight(flight) {
         `${flight.airline}: ${from} to ${to}. ` +
         `${passengers} passenger(s). Total: ₹${total.toLocaleString("en-IN")}.`;
 
-    document.getElementById("bookingModal").style.display = "flex";
+    // Show modal.
+
+    bookingModal.style.display = "flex";
+
 }
+
+/* ==============================
+   CLOSE MODAL
+================================ */
 
 function closeModal() {
-    document.getElementById("bookingModal").style.display = "none";
+
+    bookingModal.style.display = "none";
+
 }
 
+/* Close modal when clicking outside. */
+
+bookingModal.addEventListener("click", function (event) {
+
+    if (event.target === bookingModal) {
+        closeModal();
+    }
+
+});
+
+/* Close modal using Escape key. */
+
+document.addEventListener("keydown", function (event) {
+
+    if (event.key === "Escape") {
+        closeModal();
+    }
+
+});
+
+/* ==============================
+   INITIALIZE APPLICATION
+================================ */
+
 displayFlights();
+
+console.log("SkyFly application loaded successfully!");
