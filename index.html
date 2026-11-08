@@ -1,0 +1,162 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkyFly | Flight Booking</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="navbar">
+    <div class="logo">✈ SkyFly</div>
+    <nav>
+        <a href="#">Home</a>
+        <a href="#search">Book Flights</a>
+        <a href="#destinations">Destinations</a>
+    </nav>
+    <button class="login-btn" onclick="alert('Welcome to SkyFly!')">Login</button>
+</header>
+
+<section class="hero">
+    <div class="hero-content">
+        <span class="tag">EXPLORE THE WORLD</span>
+        <h1>Your Journey<br>Begins <span>Here.</span></h1>
+        <p>Discover beautiful destinations and find the perfect flight for your next adventure.</p>
+        <a href="#search" class="hero-btn">Explore Flights →</a>
+    </div>
+</section>
+
+<main class="container">
+
+    <section class="search-box" id="search">
+        <h2>Find Your Flight ✈</h2>
+
+        <form id="flightForm">
+
+            <div class="trip-options">
+                <label>
+                    <input type="radio" name="trip" value="One Way" checked>
+                    One Way
+                </label>
+                <label>
+                    <input type="radio" name="trip" value="Round Trip">
+                    Round Trip
+                </label>
+            </div>
+
+            <div class="form-grid">
+
+                <div class="field">
+                    <label>FROM</label>
+                    <input id="from" type="text" value="Hyderabad" required>
+                </div>
+
+                <div class="field">
+                    <label>TO</label>
+                    <input id="to" type="text" value="Delhi" required>
+                </div>
+
+                <div class="field">
+                    <label>DEPARTURE</label>
+                    <input id="date" type="date" required>
+                </div>
+
+                <div class="field">
+                    <label>RETURN</label>
+                    <input id="returnDate" type="date" disabled>
+                </div>
+
+                <div class="field">
+                    <label>PASSENGERS</label>
+                    <select id="passengers">
+                        <option value="1">1 Passenger</option>
+                        <option value="2">2 Passengers</option>
+                        <option value="3">3 Passengers</option>
+                        <option value="4">4 Passengers</option>
+                        <option value="5">5 Passengers</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <button type="submit" class="search-btn">
+                🔍 Search Flights
+            </button>
+
+        </form>
+    </section>
+
+    <section class="results" id="flights">
+        <div class="section-heading">
+            <div>
+                <h2>Available Flights</h2>
+                <p id="route">Hyderabad → Delhi</p>
+            </div>
+
+            <select id="sort">
+                <option value="price">Lowest Price</option>
+                <option value="duration">Shortest Duration</option>
+            </select>
+        </div>
+
+        <div class="flight-list" id="flightList"></div>
+    </section>
+
+    <section class="destinations" id="destinations">
+        <h2>Popular Destinations</h2>
+
+        <div class="destination-grid">
+
+            <div class="destination-card">
+                <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=600"
+                     alt="Paris">
+                <div class="destination-info">
+                    <h3>Paris</h3>
+                    <p>France · City of Love</p>
+                </div>
+            </div>
+
+            <div class="destination-card">
+                <img src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=600"
+                     alt="Dubai">
+                <div class="destination-info">
+                    <h3>Dubai</h3>
+                    <p>UAE · City of Luxury</p>
+                </div>
+            </div>
+
+            <div class="destination-card">
+                <img src="https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=600"
+                     alt="New York">
+                <div class="destination-info">
+                    <h3>New York</h3>
+                    <p>USA · The Big Apple</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+</main>
+
+<div class="modal" id="bookingModal">
+    <div class="modal-content">
+        <div class="success-icon">✓</div>
+        <h2>Booking Confirmed!</h2>
+        <p id="bookingDetails"></p>
+        <p class="demo-note">Demo confirmation only. No real ticket has been booked.</p>
+        <button onclick="closeModal()">Continue</button>
+    </div>
+</div>
+
+<footer>
+    <h2>✈ SkyFly</h2>
+    <p>Your journey, our responsibility.</p>
+    <p>© 2026 SkyFly Flight Booking Application</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
